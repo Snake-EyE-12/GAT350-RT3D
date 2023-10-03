@@ -16,5 +16,6 @@ namespace nc
 		float m_angle = 0;
 		float m_time;
 		vec2 m_position;
+		float m_speed = 1;
 	};
 }
