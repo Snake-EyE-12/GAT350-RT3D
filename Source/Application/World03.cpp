@@ -67,10 +67,12 @@ namespace nc
         ImGui::DragFloat3("Position", &m_transform.position[0]);
         ImGui::DragFloat3("Rotation", &m_transform.rotation[0]);
         ImGui::DragFloat3("Scale", &m_transform.scale[0]);
+        ImGui::DragFloat2("Offset", &m_offset[0]);
+        ImGui::DragFloat2("Tiling", &m_tile[0]);
         ImGui::End();
 
-        m_program->SetUniform("offset", glm::vec2{m_time, 0});
-        m_program->SetUniform("tiling", glm::vec2{m_time, m_time});
+        m_program->SetUniform("offset", m_offset);
+        m_program->SetUniform("tiling", m_tile);
         m_transform.rotation.z += 18 * dt;
 
         m_transform.position.x += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_A) ? -dt * m_speed : 0;

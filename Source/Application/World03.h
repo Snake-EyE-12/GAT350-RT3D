@@ -22,5 +22,8 @@ namespace nc
 		GLuint m_vao;
 		res_t<Program> m_program;
 		res_t<Texture> m_texture;
+
+		glm::vec2 m_offset = { 1.0f, 1.0f };
+		glm::vec2 m_tile = { 1.0f, 1.0f };
 	};
 }
