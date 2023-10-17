@@ -13,9 +13,6 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Font.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -55,12 +52,18 @@
     <ClCompile Include="..\..\ThirdParty\imgui\imgui_impl_opengl3.cpp">
       <Filter>Source\imGui</Filter>
     </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
@@ -76,6 +79,15 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
