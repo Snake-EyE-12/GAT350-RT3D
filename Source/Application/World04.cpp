@@ -11,10 +11,10 @@ namespace nc
     bool World04::Initialize()
     {
 
-        auto material = GET_RESOURCE(Material, "materials/tree.mtrl");
+        auto material = GET_RESOURCE(Material, "materials/grid.mtrl");
         m_model = std::make_shared<Model>();
         m_model->SetMaterial(material);
-        m_model->Load("models/tree.obj");
+        m_model->Load("models/buddha.obj");
 
 
 
@@ -46,9 +46,9 @@ namespace nc
         ENGINE.GetSystem<Gui>()->BeginFrame();
 
         ImGui::Begin("Transform");
-        ImGui::DragFloat3("Position", &m_transform.position[0]);
-        ImGui::DragFloat3("Rotation", &m_transform.rotation[0]);
-        ImGui::DragFloat3("Scale", &m_transform.scale[0]);
+        ImGui::DragFloat3("Position", &m_transform.position[0], 0.1f);
+        ImGui::DragFloat3("Rotation", &m_transform.rotation[0], 0.1f);
+        ImGui::DragFloat3("Scale", &m_transform.scale[0], 0.1f);
         
         ImGui::End();
 
@@ -78,6 +78,9 @@ namespace nc
         glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.01f, 100.0f);
         material->GetProgram()->SetUniform("projection", projection);
 
+
+
+
         ENGINE.GetSystem<Gui>()->EndFrame();
     }
 
@@ -86,6 +89,7 @@ namespace nc
         // pre-render
         renderer.BeginFrame();
         // render
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         m_model->Draw(GL_TRIANGLES);
         ENGINE.GetSystem<Gui>()->Draw();
         // post-render
