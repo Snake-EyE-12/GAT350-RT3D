@@ -19,16 +19,13 @@ uniform struct Material
 	vec2 tiling;
 } material;
 
-vec3 ambientLight = vec3(0.2, 0.2, 0.2);
 
 uniform struct Light
 {
 	vec3 position;
-	vec color;
+	vec3 acolor;
+	vec3 dcolor;
 } light;
-
-vec3 diffuseLight = vec3(1, 1, 1);
-vec3 lightPosition = vec3(0, 8, 0);
 
 
 void main()
@@ -39,10 +36,10 @@ void main()
 	mat4 modelView = view * model;
 	vec4 position = modelView * vec4(vposition, 1);
 	vec3 normal = normalize(mat3(modelView) * vnormal);
-	vec3 lightDirection = normalize(lightPosition - position.xyz);
+	vec3 lightDirection = normalize(light.position - position.xyz);
 	float intensity = max(dot(lightDirection, normal), 0);
 
-	vec3 lightColor = (diffuseLight * intensity) + ambientLight;
+	vec3 lightColor = (light.dcolor * intensity) + light.acolor;
 	ocolor = material.color * vec4(lightColor, 1);
 
 	mat4 mvp = projection * view * model;

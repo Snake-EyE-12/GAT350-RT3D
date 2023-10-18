@@ -14,7 +14,7 @@ namespace nc
         auto material = GET_RESOURCE(Material, "materials/grid.mtrl");
         m_model = std::make_shared<Model>();
         m_model->SetMaterial(material);
-        m_model->Load("models/buddha.obj");
+        m_model->Load("models/sphere.obj");
 
 
 
@@ -49,8 +49,9 @@ namespace nc
         ImGui::DragFloat3("Position", &m_transform.position[0], 0.1f);
         ImGui::DragFloat3("Rotation", &m_transform.rotation[0], 0.1f);
         ImGui::DragFloat3("Scale", &m_transform.scale[0], 0.1f);
-        
         ImGui::End();
+
+
 
         m_transform.rotation.z += 18 * dt;
 
@@ -79,6 +80,15 @@ namespace nc
         material->GetProgram()->SetUniform("projection", projection);
 
 
+        ImGui::Begin("Lighting");
+        ImGui::ColorEdit3("Ambient", &lightAmbient[0]);
+        ImGui::ColorEdit3("Diffuse", &lightDiffuse[0]);
+        ImGui::DragFloat3("Position", &lightPosition[0], 0.1f);
+        ImGui::End();
+
+        material->GetProgram()->SetUniform("light.position", lightPosition);
+        material->GetProgram()->SetUniform("light.acolor", lightAmbient);
+        material->GetProgram()->SetUniform("light.dcolor", lightDiffuse);
 
 
         ENGINE.GetSystem<Gui>()->EndFrame();
@@ -89,7 +99,7 @@ namespace nc
         // pre-render
         renderer.BeginFrame();
         // render
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         m_model->Draw(GL_TRIANGLES);
         ENGINE.GetSystem<Gui>()->Draw();
         // post-render
