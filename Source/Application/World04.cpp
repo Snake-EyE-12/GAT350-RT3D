@@ -14,7 +14,7 @@ namespace nc
         auto material = GET_RESOURCE(Material, "materials/grid.mtrl");
         m_model = std::make_shared<Model>();
         m_model->SetMaterial(material);
-        m_model->Load("models/sphere.obj");
+        m_model->Load("models/buddha.obj", glm::vec3{0}, glm::vec3{-90, 0, 0});
 
 
 
@@ -53,7 +53,6 @@ namespace nc
 
 
 
-        m_transform.rotation.z += 18 * dt;
 
         m_transform.position.x += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_A) ? -dt * m_speed : 0;
         m_transform.position.x += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_D) ? +dt * m_speed : 0;
@@ -76,7 +75,7 @@ namespace nc
         material->GetProgram()->SetUniform("view", view);
 
         //projection
-        glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.01f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(70.0f), ENGINE.GetSystem<Renderer>()->GetWidth() / (float)ENGINE.GetSystem<Renderer>()->GetHeight(), 0.01f, 100.0f);
         material->GetProgram()->SetUniform("projection", projection);
 
 
@@ -87,8 +86,8 @@ namespace nc
         ImGui::End();
 
         material->GetProgram()->SetUniform("light.position", lightPosition);
-        material->GetProgram()->SetUniform("light.acolor", lightAmbient);
         material->GetProgram()->SetUniform("light.dcolor", lightDiffuse);
+        material->GetProgram()->SetUniform("ambientLight", lightAmbient);
 
 
         ENGINE.GetSystem<Gui>()->EndFrame();
