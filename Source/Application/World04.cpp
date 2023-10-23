@@ -14,8 +14,15 @@ namespace nc
         auto material = GET_RESOURCE(Material, "materials/grid.mtrl");
         m_model = std::make_shared<Model>();
         m_model->SetMaterial(material);
-        m_model->Load("models/buddha.obj", glm::vec3{0}, glm::vec3{-90, 0, 0});
+        m_model->Load("models/plane.obj");
+        //m_model->Load("models/buddha.obj", glm::vec3{0}, glm::vec3{-90, 0, 0});
 
+        m_transform.position.y = -1;
+        m_light.type = light_t::eType::Point;
+        m_light.direction = glm::vec3{ 0, -1, 0 };
+        m_light.position = glm::vec3{ 0, 8, 0 };
+        m_light.color = glm::vec3{1, 1, 1};
+        m_light.cutoff = 30.0f;
 
 
         //vertex data
@@ -80,14 +87,22 @@ namespace nc
 
 
         ImGui::Begin("Lighting");
-        ImGui::ColorEdit3("Ambient", &lightAmbient[0]);
-        ImGui::ColorEdit3("Diffuse", &lightDiffuse[0]);
-        ImGui::DragFloat3("Position", &lightPosition[0], 0.1f);
+        const char* types[] = { "Point", "Directional", "Spot" };
+        ImGui::Combo("Type", (int*)(&m_light.type), types, 3);
+
+        if(m_light.type != light_t::Directional) ImGui::DragFloat3("Position", &m_light.position[0], 0.1f);
+        if (m_light.type != light_t::Point) ImGui::DragFloat3("Direction", &m_light.direction[0], 0.1f);
+        ImGui::ColorEdit3("Diffuse", &m_light.color[0]);
+        if (m_light.type == light_t::Spot) ImGui::DragFloat("Angle", &m_light.cutoff, 1, 0, 90);
+        ImGui::ColorEdit3("Ambient", &m_lightAmbient[0]);
         ImGui::End();
 
-        material->GetProgram()->SetUniform("light.position", lightPosition);
-        material->GetProgram()->SetUniform("light.dcolor", lightDiffuse);
-        material->GetProgram()->SetUniform("ambientLight", lightAmbient);
+        material->GetProgram()->SetUniform("light.type", m_light.type);
+        material->GetProgram()->SetUniform("light.position", m_light.position);
+        material->GetProgram()->SetUniform("light.direction", m_light.direction);
+        material->GetProgram()->SetUniform("light.color", m_light.color);
+        material->GetProgram()->SetUniform("light.cutoff", glm::radians(m_light.cutoff));
+        material->GetProgram()->SetUniform("ambientLight", m_lightAmbient);
 
 
         ENGINE.GetSystem<Gui>()->EndFrame();
