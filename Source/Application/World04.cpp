@@ -22,7 +22,10 @@ namespace nc
         m_light.direction = glm::vec3{ 0, -1, 0 };
         m_light.position = glm::vec3{ 0, 8, 0 };
         m_light.color = glm::vec3{1, 1, 1};
-        m_light.cutoff = 30.0f;
+        m_light.intensity = 1;
+        m_light.range = 5;
+        m_light.innerAngle = 10.0f;
+        m_light.outerAngle = 30.0f;
 
 
         //vertex data
@@ -93,15 +96,25 @@ namespace nc
         if(m_light.type != light_t::Directional) ImGui::DragFloat3("Position", &m_light.position[0], 0.1f);
         if (m_light.type != light_t::Point) ImGui::DragFloat3("Direction", &m_light.direction[0], 0.1f);
         ImGui::ColorEdit3("Diffuse", &m_light.color[0]);
-        if (m_light.type == light_t::Spot) ImGui::DragFloat("Angle", &m_light.cutoff, 1, 0, 90);
+        if (m_light.type == light_t::Spot) {
+            ImGui::DragFloat("Inner Angle", &m_light.innerAngle, 1, 0, m_light.outerAngle);
+            ImGui::DragFloat("Outer Angle", &m_light.outerAngle, 1, m_light.innerAngle, 90);
+        }
+        ImGui::DragFloat("Intensity", &m_light.intensity, 0.1f, 0, 10);
+        if (m_light.type != light_t::Directional) {
+            ImGui::DragFloat("Range", &m_light.range, 0.1f, 0.1f, 50);
+        }
         ImGui::ColorEdit3("Ambient", &m_lightAmbient[0]);
         ImGui::End();
 
         material->GetProgram()->SetUniform("light.type", m_light.type);
         material->GetProgram()->SetUniform("light.position", m_light.position);
-        material->GetProgram()->SetUniform("light.direction", m_light.direction);
+        material->GetProgram()->SetUniform("light.direction", glm::normalize(m_light.direction));
         material->GetProgram()->SetUniform("light.color", m_light.color);
-        material->GetProgram()->SetUniform("light.cutoff", glm::radians(m_light.cutoff));
+        material->GetProgram()->SetUniform("light.intensity", m_light.intensity);
+        material->GetProgram()->SetUniform("light.range", m_light.range);
+        material->GetProgram()->SetUniform("light.innerAngle", glm::radians(m_light.innerAngle));
+        material->GetProgram()->SetUniform("light.outerAngle", glm::radians(m_light.outerAngle));
         material->GetProgram()->SetUniform("ambientLight", m_lightAmbient);
 
 
