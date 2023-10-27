@@ -1,48 +1,35 @@
 #include "World04.h"
 #include "Framework/Framework.h"
 #include "Input/InputSystem.h"
-
-//#include <glm/glm/gtc/type_ptr.hpp>
+#include <glm/glm/gtc/type_ptr.hpp>
+#include <glm/glm/gtx/color_space.hpp>
 
 #define INTERLEAVE
+#define LIGHT_COUNT 3
 
 namespace nc
 {
     bool World04::Initialize()
     {
-
-        auto material = GET_RESOURCE(Material, "materials/grid.mtrl");
+        auto material = GET_RESOURCE(Material, "materials/squirrel.mtrl");
         m_model = std::make_shared<Model>();
         m_model->SetMaterial(material);
-        m_model->Load("models/plane.obj");
-        //m_model->Load("models/buddha.obj", glm::vec3{0}, glm::vec3{-90, 0, 0});
+        m_model->Load("models/squirrel.glb", glm::vec3{ 0, -0.7f, 0 }, glm::vec3{ 0 }, glm::vec3{ 0.4f });
+        
+        //m_model->Load("models/plane.obj");
+        //m_model->Load("models/squirrel.glb", glm::vec3{0}, glm::vec3{-90, 0, 0});
+        //m_transform.position = { 0, -1, 0 };
 
-        m_transform.position.y = -1;
-        m_light.type = light_t::eType::Point;
-        m_light.direction = glm::vec3{ 0, -1, 0 };
-        m_light.position = glm::vec3{ 0, 8, 0 };
-        m_light.color = glm::vec3{1, 1, 1};
-        m_light.intensity = 1;
-        m_light.range = 5;
-        m_light.innerAngle = 10.0f;
-        m_light.outerAngle = 30.0f;
-
-
-        //vertex data
-        float vertexData[] = {
-           -0.8f, -0.8f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            0.8f, -0.8f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-            0.8f,  0.8f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-           -0.8f,  0.8f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
-        };
-
-
-
-        //m_vertexBuffer = std::make_shared<VertexBuffer>();
-        //m_vertexBuffer->CreateVertexBuffer(sizeof(vertexData), 4, vertexData);
-        //m_vertexBuffer->SetAttribute(0, 3, 8 * sizeof(GLfloat), 0);                  // position 
-        //m_vertexBuffer->SetAttribute(1, 3, 8 * sizeof(GLfloat), 3 * sizeof(float));  // color 
-        //m_vertexBuffer->SetAttribute(2, 2, 8 * sizeof(GLfloat), 6 * sizeof(float));  // texcoord
+        for (int i = 0; i < LIGHT_COUNT; i++) {
+            m_lights[i].type = light_t::eType::Point;
+            m_lights[i].direction = glm::vec3{ 0, -1, 0};
+            m_lights[i].position = glm::vec3{ randomf(-0.5, 0.5), randomf(-0.1, 1), randomf(-0.5, 0.5) };
+            m_lights[i].color = glm::rgbColor(glm::vec3{ randomf() * 360, 1, 1 });
+            m_lights[i].intensity = 1;
+            m_lights[i].range = 15;
+            m_lights[i].innerAngle = 10.0f;
+            m_lights[i].outerAngle = 30.0f;
+        }
 
         return true;
     }
@@ -55,13 +42,17 @@ namespace nc
     {
         ENGINE.GetSystem<Gui>()->BeginFrame();
 
-        ImGui::Begin("Transform");
-        ImGui::DragFloat3("Position", &m_transform.position[0], 0.1f);
-        ImGui::DragFloat3("Rotation", &m_transform.rotation[0], 0.1f);
-        ImGui::DragFloat3("Scale", &m_transform.scale[0], 0.1f);
+
+        ImGui::Begin("Scene");
+        ImGui::ColorEdit3("Ambient Color", glm::value_ptr(m_lightAmbient));
+        ImGui::Separator();
+
+        for (int i = 0; i < 3; i++)
+        {
+            std::string name = "light" + std::to_string(i);
+            if (ImGui::Selectable(name.c_str(), m_selected == i)) m_selected = i;
+        }
         ImGui::End();
-
-
 
 
         m_transform.position.x += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_A) ? -dt * m_speed : 0;
@@ -91,32 +82,34 @@ namespace nc
 
         ImGui::Begin("Lighting");
         const char* types[] = { "Point", "Directional", "Spot" };
-        ImGui::Combo("Type", (int*)(&m_light.type), types, 3);
+        ImGui::Combo("Type", (int*)(&m_lights[m_selected].type), types, 3);
 
-        if(m_light.type != light_t::Directional) ImGui::DragFloat3("Position", &m_light.position[0], 0.1f);
-        if (m_light.type != light_t::Point) ImGui::DragFloat3("Direction", &m_light.direction[0], 0.1f);
-        ImGui::ColorEdit3("Diffuse", &m_light.color[0]);
-        if (m_light.type == light_t::Spot) {
-            ImGui::DragFloat("Inner Angle", &m_light.innerAngle, 1, 0, m_light.outerAngle);
-            ImGui::DragFloat("Outer Angle", &m_light.outerAngle, 1, m_light.innerAngle, 90);
+        if(m_lights[m_selected].type != light_t::Directional) ImGui::DragFloat3("Position", &m_lights[m_selected].position[0], 0.1f);
+        if (m_lights[m_selected].type != light_t::Point) ImGui::DragFloat3("Direction", &m_lights[m_selected].direction[0], 0.1f);
+        ImGui::ColorEdit3("Diffuse", &m_lights[m_selected].color[0]);
+        if (m_lights[m_selected].type == light_t::Spot) {
+            ImGui::DragFloat("Inner Angle", &m_lights[m_selected].innerAngle, 1, 0, m_lights[m_selected].outerAngle);
+            ImGui::DragFloat("Outer Angle", &m_lights[m_selected].outerAngle, 1, m_lights[m_selected].innerAngle, 90);
         }
-        ImGui::DragFloat("Intensity", &m_light.intensity, 0.1f, 0, 10);
-        if (m_light.type != light_t::Directional) {
-            ImGui::DragFloat("Range", &m_light.range, 0.1f, 0.1f, 50);
+        ImGui::DragFloat("Intensity", &m_lights[m_selected].intensity, 0.1f, 0, 10);
+        if (m_lights[m_selected].type != light_t::Directional) {
+            ImGui::DragFloat("Range", &m_lights[m_selected].range, 0.1f, 0.1f, 50);
         }
-        ImGui::ColorEdit3("Ambient", &m_lightAmbient[0]);
+        //ImGui::ColorEdit3("Ambient", &m_lightAmbient[0]);
         ImGui::End();
 
-        material->GetProgram()->SetUniform("light.type", m_light.type);
-        material->GetProgram()->SetUniform("light.position", m_light.position);
-        material->GetProgram()->SetUniform("light.direction", glm::normalize(m_light.direction));
-        material->GetProgram()->SetUniform("light.color", m_light.color);
-        material->GetProgram()->SetUniform("light.intensity", m_light.intensity);
-        material->GetProgram()->SetUniform("light.range", m_light.range);
-        material->GetProgram()->SetUniform("light.innerAngle", glm::radians(m_light.innerAngle));
-        material->GetProgram()->SetUniform("light.outerAngle", glm::radians(m_light.outerAngle));
-        material->GetProgram()->SetUniform("ambientLight", m_lightAmbient);
-
+        for (int i = 0; i < LIGHT_COUNT; i++) {
+            std::string name = "lights[" + std::to_string(i) + "]";
+            material->GetProgram()->SetUniform(name + ".type", m_lights[i].type);
+            material->GetProgram()->SetUniform(name + ".position", m_lights[i].position);
+            material->GetProgram()->SetUniform(name + ".direction", glm::normalize(m_lights[i].direction));
+            material->GetProgram()->SetUniform(name + ".color", m_lights[i].color);
+            material->GetProgram()->SetUniform(name + ".intensity", m_lights[i].intensity);
+            material->GetProgram()->SetUniform(name + ".range", m_lights[i].range);
+            material->GetProgram()->SetUniform(name + ".innerAngle", glm::radians(m_lights[i].innerAngle));
+            material->GetProgram()->SetUniform(name + ".outerAngle", glm::radians(m_lights[i].outerAngle));
+            material->GetProgram()->SetUniform("ambientLight", m_lightAmbient);
+        }
 
         ENGINE.GetSystem<Gui>()->EndFrame();
     }
