@@ -6,11 +6,23 @@
 #include "Core/Core.h"
 #include "Framework/Framework.h"
 #include "Renderer/Renderer.h"
+#include "Core/StringUtils.h"
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
+	std::string testString = "This Is a 45 numbered STRING";
+	std::string ts = "This Is a LONGER 92 numbered STRING";
+	std::cout << nc::StringUtils::CreateUnique(testString);
+	std::cout << nc::StringUtils::CreateUnique(testString);
+	std::cout << nc::StringUtils::CreateUnique(testString);
+	std::cout << nc::StringUtils::CreateUnique(testString);
+	std::cout << nc::StringUtils::CreateUnique(testString) << endl;
+	std::cout << nc::StringUtils::ToUpper(testString) << endl;
+	std::cout << nc::StringUtils::ToLower(testString) << endl;
+	std::cout << nc::StringUtils::IsEqualIgnoreCase(testString, nc::StringUtils::ToLower(ts)) << endl;
+	/*
 	INFO_LOG("Initialize Engine...")
 
 	//nc::MemoryTracker::Initialize();
@@ -38,6 +50,7 @@ int main(int argc, char* argv[])
 
 	world->Shutdown();
 	ENGINE.Shutdown();
+	*/
 
 	return 0;
 }
