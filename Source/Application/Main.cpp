@@ -3,6 +3,7 @@
 #include "World03.h"
 #include "World04.h"
 #include "World05.h"
+#include "World06.h"
 #include "Core/Core.h"
 #include "Framework/Framework.h"
 #include "Renderer/Renderer.h"
@@ -12,6 +13,7 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+	/*
 	std::string testString = "This Is a 45 numbered STRING";
 	std::string ts = "This Is a LONGER 92 numbered STRING";
 	std::cout << nc::StringUtils::CreateUnique(testString);
@@ -22,7 +24,7 @@ int main(int argc, char* argv[])
 	std::cout << nc::StringUtils::ToUpper(testString) << endl;
 	std::cout << nc::StringUtils::ToLower(testString) << endl;
 	std::cout << nc::StringUtils::IsEqualIgnoreCase(testString, nc::StringUtils::ToLower(ts)) << endl;
-	/*
+	*/
 	INFO_LOG("Initialize Engine...")
 
 	//nc::MemoryTracker::Initialize();
@@ -31,7 +33,7 @@ int main(int argc, char* argv[])
 
 	ENGINE.Initialize();
 
-	auto world = make_unique<nc::World05>();
+	auto world = make_unique<nc::World06>();
 	world->Initialize();
 
 	// main loop
@@ -50,7 +52,6 @@ int main(int argc, char* argv[])
 
 	world->Shutdown();
 	ENGINE.Shutdown();
-	*/
 
 	return 0;
 }

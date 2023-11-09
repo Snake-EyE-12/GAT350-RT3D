@@ -1,14 +1,11 @@
 {
-  "program":"shaders/lit_texture.prog",
-    "textures": [
-        "textures/tree_texture.png"
+    "program": "shaders/unlit_billboard.prog",
+    "albedoTexture": "textures/tree.tga" ,
+    "albedo": [
+        1,
+        1,
+        1
     ],
-  "color":[
-      1,
-      1,
-      1,
-      1
-    ],
-  "tiling": [ 1, 1 ],
-  "offset": [ 0, 0 ]
+    "tiling": [ 1, 1 ],
+    "offset": [ 0, 0 ]
 }

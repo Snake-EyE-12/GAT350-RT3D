@@ -14,6 +14,9 @@
     <Filter Include="Scenes">
       <UniqueIdentifier>{00bc34d3-c1fd-4e75-95a6-28c1013ae970}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Cubemaps">
+      <UniqueIdentifier>{c58bfcf9-c9f5-452f-b0cc-4b9da1150f2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -34,6 +37,9 @@
     <ClCompile Include="World05.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="World06.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="World01.h">
@@ -49,6 +55,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="World05.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="World06.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,9 +107,6 @@
     <None Include="..\..\Build\Assets\Materials\squirrel.mtrl">
       <Filter>Materials</Filter>
     </None>
-    <None Include="..\..\Build\Assets\Materials\tree.mtrl">
-      <Filter>Materials</Filter>
-    </None>
     <None Include="..\..\Build\Assets\Materials\grid.mtrl">
       <Filter>Materials</Filter>
     </None>
@@ -121,6 +127,78 @@
     </None>
     <None Include="..\..\Build\Assets\Materials\phong.mtrl">
       <Filter>Materials</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\lit_phong_normal.prog">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\lit_phong_normal.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\lit_phong_normal.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Materials\ogre.mtrl">
+      <Filter>Materials</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Materials\skybox.mtrl">
+      <Filter>Materials</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\skybox.prog">
+      <Filter>Shaders\Cubemaps</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\cubemap.frag">
+      <Filter>Shaders\Cubemaps</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\skybox.vert">
+      <Filter>Shaders\Cubemaps</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\reflection.prog">
+      <Filter>Shaders\Cubemaps</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\reflection.vert">
+      <Filter>Shaders\Cubemaps</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Materials\reflection.mtrl">
+      <Filter>Materials</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\refraction.vert">
+      <Filter>Shaders\Cubemaps</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\refraction.prog">
+      <Filter>Shaders\Cubemaps</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Materials\refraction.mtrl">
+      <Filter>Materials</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\ulit_sprite.prog">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\ulit_sprite.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\ulit_sprite.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Materials\sprite.mtrl">
+      <Filter>Materials</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\unlit_billboard.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Shaders\unlit_billboard.prog">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Materials\tree.mtrl">
+      <Filter>Materials</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Scenes\scene_framebuffer.json">
+      <Filter>Scenes</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Materials\framebuffer.mtrl">
+      <Filter>Materials</Filter>
+    </None>
+    <None Include="..\..\Build\Assets\Scenes\ComponentTestScene.json">
+      <Filter>Scenes</Filter>
     </None>
   </ItemGroup>
 </Project>

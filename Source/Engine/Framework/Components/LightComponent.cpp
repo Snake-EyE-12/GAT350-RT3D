@@ -1,5 +1,6 @@
 #include "LightComponent.h"
 #include "Framework/Actor.h"
+#include "Core/StringUtils.h"
 
 namespace nc
 {
@@ -46,7 +47,18 @@ namespace nc
 
 	void LightComponent::Read(const nc::json_t& value)
 	{
-		// read json file // - light type
-		//READ_DATA(value, type);
+		
+		std::string lightTypeName;
+		READ_NAME_DATA(value, "lightType", lightTypeName);
+		if (StringUtils::IsEqualIgnoreCase(lightTypeName, "point")) type = eType::Point;
+		else if (StringUtils::IsEqualIgnoreCase(lightTypeName, "directional")) type = eType::Directional;
+		else if (StringUtils::IsEqualIgnoreCase(lightTypeName, "spot")) type = eType::Spot;
+
+
+		READ_DATA(value, color);
+		READ_DATA(value, intensity);
+		READ_DATA(value, range);
+		READ_DATA(value, innerAngle);
+		READ_DATA(value, outerAngle);
 	}
 }

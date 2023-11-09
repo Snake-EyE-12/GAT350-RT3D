@@ -1,6 +1,7 @@
 #include "ModelComponent.h"
 #include "Framework/Actor.h"
 #include "Framework/Resource/ResourceManager.h"
+#include "Core/StringUtils.h"
 
 namespace nc
 {
@@ -10,13 +11,11 @@ namespace nc
 	{
 		if (!modelName.empty())
 		{
-			model = std::make_shared<Model>();
-			model->Load(modelName);
-			//ADD_RESOURCE(modelName, model);
+			model = GET_RESOURCE(Model, modelName);
 		}
 		if (model && !materialName.empty())
 		{
-			model->SetMaterial(GET_RESOURCE(Material, materialName));
+			material = GET_RESOURCE(Material, materialName);
 		}
 
 		return true;
@@ -28,9 +27,12 @@ namespace nc
 
 	void ModelComponent::Draw(Renderer& renderer)
 	{
-		auto material = model->GetMaterial();
 		material->Bind();
 		material->GetProgram()->SetUniform("model", m_owner->transform.GetMatrix());
+
+		glDepthMask(enableDepth);
+		glCullFace(cullface);
+
 		model->Draw();
 	}
 
@@ -38,5 +40,11 @@ namespace nc
 	{
 		READ_DATA(value, modelName);
 		READ_DATA(value, materialName);
+
+		READ_DATA(value, enableDepth);
+		std::string cullfaceName;
+		if (READ_NAME_DATA(value, "cullface", cullfaceName)) {
+			if (nc::StringUtils::IsEqualIgnoreCase(cullfaceName, "front")) cullface = GL_FRONT;
+		}
 	}
 }

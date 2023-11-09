@@ -17,6 +17,7 @@ namespace nc
 		const uint32_t SPECULAR_TEXTURE_MASK	= (1 << 1);
 		const uint32_t NORMAL_TEXTURE_MASK		= (1 << 2);
 		const uint32_t EMISSIVE_TEXTURE_MASK	= (1 << 3);
+		const uint32_t CUBEMAP_TEXTURE_MASK		= (1 << 4);
 
 
 
@@ -32,6 +33,7 @@ namespace nc
 		uint32_t params{ 0 };
 		glm::vec3 albedo{1};
 		glm::vec3 specular{1};
+		glm::vec3 normal{0};
 		glm::vec3 emissive{0};
 		float shininess = 2;
 
@@ -42,6 +44,7 @@ namespace nc
 		res_t<Texture> specularTexture;
 		res_t<Texture> normalTexture;
 		res_t<Texture> emissiveTexture;
+		res_t<Texture> cubemapTexture;
 
 	private:
 		res_t<Program> m_program;
