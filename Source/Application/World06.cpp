@@ -11,7 +11,7 @@ namespace nc
     bool World06::Initialize()
     {
         m_scene = std::make_unique<Scene>();
-        m_scene->Load("scenes/ComponentTestScene.json");
+        m_scene->Load("scenes/scene_framebuffer.json");
         m_scene->Initialize();
 
         auto texture = std::make_shared<Texture>();
@@ -138,7 +138,7 @@ namespace nc
     void World06::Draw(Renderer& renderer)
     {
         // Pass 1
-        //m_scene->GetActorByName("cube")->active = false;
+        m_scene->GetActorByName("cube")->active = false;
 
         auto framebuffer = GET_RESOURCE(Framebuffer, "fb");
         renderer.SetViewport(framebuffer->GetSize().x, framebuffer->GetSize().y);
@@ -152,7 +152,7 @@ namespace nc
 
 
         // Pass 2
-        //m_scene->GetActorByName("cube")->active = true;
+        m_scene->GetActorByName("cube")->active = true;
         renderer.ResetViewport();
 
         renderer.BeginFrame();

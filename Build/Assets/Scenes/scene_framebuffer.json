@@ -36,6 +36,59 @@
 					"materialName": "materials/framebuffer.mtrl"
 				}
 			]
+		},
+		{
+			"type": "Actor",
+			"name": "camera",
+			"persistent": true,
+			"active": true,
+			"prototype": false,
+			"transform": {
+				"position": [ 0, 0, 0 ],
+				"scale": [ 1, 1, 1 ],
+				"rotation": [ 0, 0, 0 ]
+			},
+			"components": [
+				{
+					"type": "CameraComponent",
+					"fov": 70,
+					"aspect": 1.4,
+					"near": 0.1,
+					"far": 100
+				},
+				{
+					"type": "CameraController",
+					"sensitivity": 0.5,
+					"speed": 5
+				}
+			]
+		},
+		{
+			"type": "Actor",
+			"name": "light",
+			"persistent": true,
+			"active": true,
+			"prototype": false,
+			"transform": {
+				"position": [ 0, 0, 0 ],
+				"scale": [ 1, 1, 1 ],
+				"rotation": [ 0, 0, 0 ]
+			},
+			"components": [
+				{
+					"type": "LightComponent",
+					"lightType": "point",
+					"color": [
+						1,
+						1,
+						1
+					],
+					"intensity": 1,
+					"range": 20,
+					"innerAngle": 20,
+					"outerAngle": 30
+				}
+			]
 		}
 	]
 }
