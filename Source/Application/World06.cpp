@@ -15,83 +15,17 @@ namespace nc
         m_scene->Initialize();
 
         auto texture = std::make_shared<Texture>();
-        texture->CreateTexture(512, 512);
+        texture->CreateTexture(1024, 1024);
         ADD_RESOURCE("fb_texture", texture);
         auto framebuffer = std::make_shared<Framebuffer>();
         framebuffer->CreateFramebuffer(texture);
         ADD_RESOURCE("fb", framebuffer);
 
-        auto material = GET_RESOURCE(Material, "materials/framebuffer.mtrl");
+        auto material = GET_RESOURCE(Material, "materials/postprocess.mtrl");
         if (material) {
             material->albedoTexture = texture;
         }
 
-        /*{
-            auto actor = CREATE_CLASS(Actor);
-            actor->name = "camera1";
-            actor->transform.position = glm::vec3{ 0, 0, -3 };
-            actor->transform.rotation = glm::radians(glm::vec3{ 0, 0, 0 });
-
-            auto cameraComponent = CREATE_CLASS(CameraComponent);
-            cameraComponent->SetPerspective(70.0f, ENGINE.GetSystem<Renderer>()->GetWidth() / (float)ENGINE.GetSystem<Renderer>()->GetHeight(), 0.1f, 100.0f);
-            actor->AddComponent(std::move(cameraComponent));
-            
-            auto cameraController = CREATE_CLASS(CameraController);
-            cameraController->speed = 5;
-            cameraController->sensitivity = 0.5f;
-            cameraController->m_owner = actor.get();
-            cameraController->Initialize();
-            actor->AddComponent(std::move(cameraController));
-
-            m_scene->Add(std::move(actor));
-        }*/
-        /*for (int i = 0; i < 10; i++) {
-            auto actor = CREATE_CLASS_BASE(Actor, "tree");
-            actor->name = StringUtils::CreateUnique("tree");
-            actor->transform.position = glm::vec3{ randomf(-10, 10), 0, randomf(-10, 10) };
-            actor->transform.scale = glm::vec3{ randomf(0.5f, 3.0f), randomf(0.5f, 3.0f), 1 };
-            actor->Initialize();
-            m_scene->Add(std::move(actor));
-        }*/
-
-
-        /*{
-            auto actor = CREATE_CLASS(Actor);
-            actor->name = "actor1";
-            actor->transform.position = glm::vec3{ 0, 0, 0 };
-            auto modelComponent = CREATE_CLASS(ModelComponent);
-            modelComponent->model = std::make_shared<Model>();
-            modelComponent->model->SetMaterial(GET_RESOURCE(Material, "materials/squirrel.mtrl"));
-            modelComponent->model->Load("models/squirrel.glb", glm::vec3{ 0, -0.7f, 0 }, glm::vec3{ 0 }, glm::vec3{ 0.4f });
-            actor->AddComponent(std::move(modelComponent));
-            m_scene->Add(std::move(actor));
-        }
-        {
-            auto actor = CREATE_CLASS(Actor);
-            actor->name = "actor2";
-            actor->transform.position = glm::vec3{ 5, 0, 0 };
-            auto modelComponent = CREATE_CLASS(ModelComponent);
-            modelComponent->model = std::make_shared<Model>();
-            modelComponent->model->SetMaterial(GET_RESOURCE(Material, "materials/squirrel.mtrl"));
-            modelComponent->model->Load("models/squirrel.glb", glm::vec3{ 0, -0.7f, 0 }, glm::vec3{ 0 }, glm::vec3{ 0.4f });
-            actor->AddComponent(std::move(modelComponent));
-            m_scene->Add(std::move(actor));
-        }*/
-
-        /*{
-            auto actor = CREATE_CLASS(Actor);
-            actor->name = "light1";
-            actor->transform.position = glm::vec3{ 3, 3, 3 };
-            auto lightComponent = CREATE_CLASS(LightComponent);
-            lightComponent->type = LightComponent::eType::Point;
-            lightComponent->color = glm::rgbColor(glm::vec3{ randomf() * 360, 1, 1 });
-            lightComponent->intensity = 1;
-            lightComponent->range = 20;
-            lightComponent->innerAngle = 10.0f;
-            lightComponent->outerAngle = 30.0f;
-            actor->AddComponent(std::move(lightComponent));
-            m_scene->Add(std::move(actor));
-        }*/
         return true;
     }
 
@@ -106,31 +40,62 @@ namespace nc
         m_scene->Update(dt);
         m_scene->ProcessGui();
 
-        //auto actor = m_scene->GetActorByName<Actor>("actor1");
-
-        /*actor->transform.position.x += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_A) ? dt * m_speed : 0;
-        actor->transform.position.x += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_D) ? -dt * m_speed : 0;
-        actor->transform.position.z += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_W) ? +dt * m_speed : 0;
-        actor->transform.position.z += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_S) ? -dt * m_speed : 0;
-        actor->transform.position.y += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_SPACE) ? +dt * m_speed : 0;
-        actor->transform.position.y += ENGINE.GetSystem<InputSystem>()->GetKeyDown(SDL_SCANCODE_LSHIFT) ? -dt * m_speed : 0;*/
         m_time += dt;
 
-        //auto material = actor->GetComponent<ModelComponent>()->material;
+        // Main Code
+        ImGui::Begin("Post-Process");
+        ImGui::SliderFloat("Blend", &m_blend, 0, 1);
 
-        //material->ProcessGUI();
-        //material->Bind();
+        bool effect = m_params & GRAYSCALE_MASK;
+        if (ImGui::Checkbox("Gray Scale", &effect)) {
+            if (effect) m_params |= GRAYSCALE_MASK;
+            else m_params ^= GRAYSCALE_MASK;
+        }
+        effect = m_params & COLORTINT_MASK;
+        if (ImGui::Checkbox("Color Tint", &effect)) {
+            if (effect) m_params |= COLORTINT_MASK;
+            else m_params ^= COLORTINT_MASK;
+        }
+        if (effect) ImGui::ColorEdit3("Tint", &m_colorTint[0]);
+        effect = m_params & INVERT_MASK;
+        if (ImGui::Checkbox("Invert", &effect)) {
+            if (effect) m_params |= INVERT_MASK;
+            else m_params ^= INVERT_MASK;
+        }
+        effect = m_params & GRAIN_MASK;
+        if (ImGui::Checkbox("Grain", &effect)) {
+            if (effect) m_params |= GRAIN_MASK;
+            else m_params ^= GRAIN_MASK;
+        }
+        effect = m_params & SCANLINE_MASK;
+        if (ImGui::Checkbox("Scanline", &effect)) {
+            if (effect) m_params |= SCANLINE_MASK;
+            else m_params ^= SCANLINE_MASK;
+        }
+        if (effect) {
+            ImGui::DragFloat("Scanline Intensity", &scanlineIntensity, 0.01, 0, 1);
+            ImGui::DragFloat("Scanline Spacing", &scanlineSpacing, 0.1, 0, 100);
+        }
+        effect = m_params & KERNEL_MASK;
+        if (ImGui::Checkbox("Kernel", &effect)) {
+            if (effect) m_params |= KERNEL_MASK;
+            else m_params ^= KERNEL_MASK;
+        }
+        if (effect) ImGui::DragFloat("Offset", &kernelOffset, 0.01, 0, 400);
+        ImGui::End();
+        //Set Post Process Shader GUI
+        auto program = GET_RESOURCE(Program, "shaders/postprocess.prog");
+        if (program) {
+            program->Use();
+            program->SetUniform("blend", m_blend);
+            program->SetUniform("params", m_params);
+            program->SetUniform("colorTint", m_colorTint);
+            program->SetUniform("time", m_time);
+            program->SetUniform("scanlineSpacing", scanlineSpacing);
+            program->SetUniform("scanlineIntensity", scanlineIntensity);
+            program->SetUniform("kernelOffset", kernelOffset);
+        }
 
-        /*material = GET_RESOURCE(Material, "materials/refraction.mtrl");
-        if (material) {
-            ImGui::Begin("Refraction");
-            ImGui::DragFloat("IOR", &m_refraction, 0.01f, 1, 3);
-            auto program = material->GetProgram();
-            program->Use(); 
-            program->SetUniform("ior", m_refraction);
-            ImGui::End();
-
-        }*/
         
         ENGINE.GetSystem<Gui>()->EndFrame();
     }
@@ -138,25 +103,26 @@ namespace nc
     void World06::Draw(Renderer& renderer)
     {
         // Pass 1
-        m_scene->GetActorByName("cube")->active = false;
+        m_scene->GetActorByName("postprocess")->active = false;
 
         auto framebuffer = GET_RESOURCE(Framebuffer, "fb");
         renderer.SetViewport(framebuffer->GetSize().x, framebuffer->GetSize().y);
         framebuffer->Bind();
 
 
-        renderer.BeginFrame({0, 0, 1});
+        renderer.BeginFrame({0, 0, 0});
         m_scene->Draw(renderer);
 
         framebuffer->Unbind();
 
 
         // Pass 2
-        m_scene->GetActorByName("cube")->active = true;
+        m_scene->GetActorByName("postprocess")->active = true;
         renderer.ResetViewport();
 
         renderer.BeginFrame();
-        m_scene->Draw(renderer);
+        m_scene->GetActorByName("postprocess")->Draw(renderer);
+        //m_scene->Draw(renderer);
 
         ENGINE.GetSystem<Gui>()->Draw();
 
